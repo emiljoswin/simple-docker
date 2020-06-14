@@ -8,4 +8,17 @@ before_install:
   - docker build -t simple-docker-app -f Dockerfile.dev .
 
 script: 
-  - docker run simple-docker-app npm run test -- --coverage
+  - docker run -e CI=true simple-docker-app npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "simple-docker"
+  env: "SimpleDocker-env"
+  bucket-name: "elasticbeanstalk-us-east-2-244522864296"
+  bucket-path: "simple-docker"
+  on:
+    branch: "master"
+  access_key_id: $aws_access_key_id
+  secret_access_key:
+    secure: "$aws_secret_access_key"
